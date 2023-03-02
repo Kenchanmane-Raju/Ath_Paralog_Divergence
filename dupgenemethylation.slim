@@ -1,0 +1,32 @@
+
+// where m is the mutation rate and n is the fraction of mutations that are neutral
+initialize() {
+	
+	initializeSLiMOptions(nucleotideBased=T); // simulation is nucleotide based 
+	defineConstant("L", initializeAncestralNucleotides("/home/mlensink/slimsimulations/mutationmethylationproj/gene3000.fasta"));
+	initializeMutationTypeNuc("m1", 0.5, "f", 0);         // neutral
+	initializeMutationTypeNuc("m2", 0.1, "g", -0.01, 1);  // deleterious
+	
+
+	initializeGenomicElementType("g1", c(m1, m2), c(1-n, 1), mmJukesCantor(1e-6*m));
+	// parameter n is the fraction of mutations that are neutral and parameter m sets the mutation rate
+
+	initializeGenomicElement(g1, 0,L-1);
+	
+	initializeRecombinationRate(1e-4);
+}
+
+// we create a population of 1000 individuals
+1 early() {
+	sim.addSubpop("p1", 1000);
+	p1.setSelfingRate(0.96);
+}
+
+
+// after 1000 generations we sample the population and save as a vcf
+10000 late() {
+	p1.setSubpopulationSize(1000);
+	g = p1.sampleIndividuals(1000).genomes;
+	g.outputVCF(filePath=paste('/home/mlensink/slimsimulations/mutationmethylationproj/vcf_output/duplicatedgene_'+m+'_'+n+'_'+i+'.vcf', sep=""), simplifyNucleotides=T);
+	}
+//paste
