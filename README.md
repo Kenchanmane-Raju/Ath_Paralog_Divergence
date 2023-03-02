@@ -7,3 +7,4 @@ Code and data related to the manuscript
 
 1) Data files with A. thaliana genic information along with their methylation status, polymorphism and epiallele frequency across the population.
 2) R scripts for data analysis and plotting
+3) Scripts used to run simulations (Mariele Lensink and Grey Monroe)
