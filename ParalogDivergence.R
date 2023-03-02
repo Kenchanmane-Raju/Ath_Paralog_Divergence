@@ -17,7 +17,7 @@ setwd("C:/Users/kenchanm/Dropbox/ANALYSIS/MBE_V2")
 
 
 df1 <- read.csv("mutation_single_gene_level.csv") # Mutation data from Grey et al 2021 
-df2 <- read.csv("../GeneDuplication_V3/data/Athaliana/methylpy/results/Athaliana_MetClassified_genes_V6.csv")[,1:2] #methylation data from Raju et al. 2022
+df2 <- read.csv("../GeneDuplication_V3/data/Athaliana/methylpy/results/Athaliana_MetClassified_genes_V6.csv")[,1:2] # methylation data from Raju et al. 2023
 
 
 single_gene_level <- merge (df1, df2, by.x='gene', by.y="Feature")[,-2]  # -2 to remove the row numbers from df2
