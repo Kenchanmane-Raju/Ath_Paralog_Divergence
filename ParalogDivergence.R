@@ -8,7 +8,7 @@
 ## Author: Sunil Kenchanmane Raju
 ## contact: kenchanmane@gmail.com
 ##
-## Notes: Script edited from earlier version from 2021
+## Notes: Script combined from earlier versions (v2021)
 ##   
 ## _______________________________________________
 
