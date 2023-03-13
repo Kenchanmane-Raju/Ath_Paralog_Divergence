@@ -375,7 +375,7 @@ library(AICcmodavg)
 
 #### ChIP data analysis ####
 
-df10 <- read.csv("PDS5_enrich.csv", check.names = F)[,1:2] # from Grey labs paper
+df10 <- read.csv("PDS5_enrich_03-12-23.csv", check.names = F)[,1:2] #From latest dataset from Grey
 df11 <- merge(single_gene_level, df10, by="gene")
 
 df3 <- read.csv("../GeneDuplication_V3/figures_V6/Athaliana/Athaliana_Duplicate_pair_met.csv", header=TRUE)
@@ -388,68 +388,72 @@ df5a <- df5a[df5a$Duplicate.2_Methylation != "Unclassified",]
 
 df5b <- df5a[c(2,1,3:9)]
 
-write.csv(df5b, "DuplicatePairs_PDS5.csv")
+write.csv(df5b, "DuplicatePairs_PDS5_03-12-23.csv")
 
-#Manually creating dataframe with values for plotting PDS5 in duplicate pairs
+# Manually creating dataframe with values for plotting PDS5 in duplicate pairs from df5b
+# t-test significance values are in the manually created file 
 
-data14 <- data.frame(
-  name=c("gbM-unM", "gbM-unM","unM-teM","unM-teM","gbM-teM", "gbM-teM"),
-  name2=c("Paralog1", "Paralog2"),
-  value=c( -0.144593234, -0.493327574, -2.830684628, -1.169974235,  -1.070464122, -3.146761625), # value calculated from mutations_single_gene_analysis.csv 
-  CI=c( 0.03145822, 0.027730664, 0.092326787, 0.053143249,  0.319390081, 0.344741221) # CI value obtained by prop.test (code below in statistical test section) 
-)
-
-data14$name <- factor (data14$name, levels = c("gbM-unM", "unM-teM", "gbM-teM"))
-
-p<- ggplot(data14, aes(x=name, y=value, fill=name2)) +
-  theme_bw()+
-  geom_bar(stat="identity", 
-           position=position_dodge()) +
-  geom_errorbar(aes(ymin=value-CI, ymax=value+CI), width=.4, size=0.4, position=position_dodge(.9))+
-  labs(x="",y="PDS5-ChIP")+
-  theme(axis.text.y=element_text(color="black",hjust=1,size=12))
-p + scale_fill_brewer(palette = "Paired") 
-
-
-#### H3K4me1-Duplicate Pairs ####
-
-df10 <- read.csv("PDS5_enrich.csv", check.names = F)[,c(1,3)]
-df11 <- merge(single_gene_level, df10, by="gene")
-
-df3 <- read.csv("../GeneDuplication_V3/figures_V6/Athaliana/Athaliana_Duplicate_pair_met.csv", header=TRUE)
-
-df4 <- merge(df3, df11[, c(1,65)], by.x="Duplicate.1", by.y ="gene") #data for dup pairs
-df5 <- merge(df4, df11[, c(1,65)], by.x="Duplicate.2", by.y ="gene")
-
-df5a <- df5[df5$Duplicate.1_Methylation != "Unclassified",] #removing unclassified
-df5a <- df5a[df5a$Duplicate.2_Methylation != "Unclassified",]
-
-df5b <- df5a[c(2,1,3:9)]
-
-write.csv(df5b, "DuplicatePairs_H3K4me1.csv")
-
-#Manually creating dataframe with values for plotting H3K4me1 in duplicate pairs
-
-data14 <- data.frame(
-  name=c("gbM-unM", "gbM-unM","unM-teM","unM-teM","gbM-teM", "gbM-teM"),
-  name2=c("Paralog1", "Paralog2"),
-  value=c( 0.522170088, 0.133711265, -0.924217272, -0.390878546,  0.185870599, -0.88680682), # value calculated from mutations_single_gene_analysis.csv 
-  CI=c( 0.020922673, 0.020251669, 0.022927231, 0.028879286,  0.137126602, 0.094229551) # CI value obtained by prop.test (code below in statistical test section) 
-)
-
-data14$name <- factor (data14$name, levels = c("gbM-unM", "unM-teM", "gbM-teM"))
-
-p<- ggplot(data14, aes(x=name, y=value, fill=name2)) +
-  theme_bw()+
-  geom_bar(stat="identity", 
-           position=position_dodge()) +
-  geom_errorbar(aes(ymin=value-CI, ymax=value+CI), width=.4, size=0.4, position=position_dodge(.9))+
-  labs(x="",y="H3K4me1")+
-  theme(axis.text.y=element_text(color="black",hjust=1,size=12))
-p + scale_fill_brewer(palette = "Paired") 
-
+# data14 <- data.frame(
+#   name=c("gbM-unM", "gbM-unM","unM-teM","unM-teM","gbM-teM", "gbM-teM"),
+#   name2=c("Paralog1", "Paralog2"),
+#   value=c( 2.301247336, 2.069071976, 1.440033779, 0.088270441,  1.567684995, -0.313787141), 
+#   CI=c( 0.036646584, 0.029603799, 0.056664143, 0.099254883,  0.282242585, 0.332743916) 
+# )
+# 
+# data14$name <- factor (data14$name, levels = c("gbM-unM", "unM-teM", "gbM-teM"))
+# 
+# p<- ggplot(data14, aes(x=name, y=value, fill=name2)) +
+#   theme_bw()+
+#   geom_bar(stat="identity", 
+#            position=position_dodge()) +
+#   geom_errorbar(aes(ymin=value-CI, ymax=value+CI), width=.4, size=0.4, position=position_dodge(.9))+
+#   labs(x="",y="PDS5-ChIP")+
+#   theme(axis.text.y=element_text(color="black",hjust=1,size=12))
+# p + scale_fill_brewer(palette = "Paired") 
+# 
+# 
+# #### H3K4me1-Duplicate Pairs ####
+# 
+# df10 <- read.csv("PDS5_enrich.csv", check.names = F)[,c(1,3)]
+# df11 <- merge(single_gene_level, df10, by="gene")
+# 
+# df3 <- read.csv("../GeneDuplication_V3/figures_V6/Athaliana/Athaliana_Duplicate_pair_met.csv", header=TRUE)
+# 
+# df4 <- merge(df3, df11[, c(1,65)], by.x="Duplicate.1", by.y ="gene") #data for dup pairs
+# df5 <- merge(df4, df11[, c(1,65)], by.x="Duplicate.2", by.y ="gene")
+# 
+# df5a <- df5[df5$Duplicate.1_Methylation != "Unclassified",] #removing unclassified
+# df5a <- df5a[df5a$Duplicate.2_Methylation != "Unclassified",]
+# 
+# df5b <- df5a[c(2,1,3:9)]
+# 
+# write.csv(df5b, "DuplicatePairs_H3K4me1.csv")
+# 
+# # Manually creating dataframe with values for plotting H3K4me1 in duplicate pairs
+# 
+# 
+# data14 <- data.frame(
+#   name=c("gbM-unM", "gbM-unM","unM-teM","unM-teM","gbM-teM", "gbM-teM"),
+#   name2=c("Paralog1", "Paralog2"),
+#   value=c( 0.522170088, 0.133711265, -0.924217272, -0.390878546,  0.185870599, -0.88680682), 
+#   CI=c(0.020922673, 0.020251669, 0.022927231, 0.028879286,  0.137126602, 0.094229551) 
+# )
+# 
+# data14$name <- factor (data14$name, levels = c("gbM-unM", "unM-teM", "gbM-teM"))
+# 
+# p<- ggplot(data14, aes(x=name, y=value, fill=name2)) +
+#   theme_bw()+
+#   geom_bar(stat="identity", 
+#            position=position_dodge()) +
+#   geom_errorbar(aes(ymin=value-CI, ymax=value+CI), width=.4, size=0.4, position=position_dodge(.9))+
+#   labs(x="",y="H3K4me1")+
+#   theme(axis.text.y=element_text(color="black",hjust=1,size=12))
+# p + scale_fill_brewer(palette = "Paired") 
+# 
 
 #### H3K4me1 & PDS5 boxplots ####
+
+# Manually creating a csv file to plot enrichment scores for duplicate pairs from df5b
 
 df20 <- read.csv("h3k4me1_pairs_for_boxplot.csv", header=T)
 
@@ -463,7 +467,7 @@ ggplot(df20, aes(x=classification, y=value, fill=paralog)) +
 
 #pds5
 
-df21 <- read.csv("pds5_pairs_for_boxplot.csv", header=T)
+df21 <- read.csv("pds5_pairs_for_boxplot_03-12-23.csv", header=T)
 
 df21$classification <- factor(df21$classification, levels = c("gbM-unM", "unM-teM", "gbM-teM"))
 
