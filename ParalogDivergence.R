@@ -465,7 +465,7 @@ ggplot(df20, aes(x=classification, y=value, fill=paralog)) +
   geom_hline(yintercept = 0, linetype=2)+
   scale_fill_brewer(palette = "Paired")
 
-#pds5
+#PDS5
 
 df21 <- read.csv("pds5_pairs_for_boxplot_03-12-23.csv", header=T) # from new data
 
