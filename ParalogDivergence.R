@@ -467,7 +467,7 @@ ggplot(df20, aes(x=classification, y=value, fill=paralog)) +
 
 #pds5
 
-df21 <- read.csv("pds5_pairs_for_boxplot_03-12-23.csv", header=T)
+df21 <- read.csv("pds5_pairs_for_boxplot_03-12-23.csv", header=T) # from new data
 
 df21$classification <- factor(df21$classification, levels = c("gbM-unM", "unM-teM", "gbM-teM"))
 
