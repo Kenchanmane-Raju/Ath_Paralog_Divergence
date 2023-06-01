@@ -315,6 +315,8 @@ p <- ggplot(single_gene_level[!is.na(single_gene_level$Duplication),]) +
   
   write.csv(df9, "../MBE_V2/Transposed_direction_methylation_NSNPs.csv")
   
+  df9 <- read.csv("../Transposed_direction_methylation_NSNPs.csv")
+  
   library(ggplot2)
   library(gghalves)
   
@@ -487,9 +489,10 @@ devtools::install_github("kassambara/ggpubr")
 
 library(ggpubr)
 
-df21 <- read.csv("Transposed_pairs_NSNPs_boxplot.csv", header=T)
+df21 <- read.csv("../Transposed_pairs_NSNPs_boxplot.csv", header=T)
 
-df21$classification <- factor(df21$classification, levels = c("unM -- > gbM", "teM -- > gbM", "gbM -- > unM", "teM -- > unM", "unM -- > teM", "gbM -- > teM"))
+df21$classification <- factor(df21$classification, levels = c("unM -- > gbM", "teM -- > gbM", "gbM -- > unM", "teM -- > unM", "unM -- > teM", "gbM -- > teM",
+                                                              "gbM -- > gbM", "teM -- > teM", "unM -- > unM"))
 
 compare_means(value ~ paralog, data = df21, group.by = "classification") #statistical test
 
@@ -497,9 +500,92 @@ compare_means(value ~ paralog, data = df21, group.by = "classification") #statis
   theme_bw()+
   geom_boxplot()+
   scale_fill_brewer(palette = "Paired")+
-  geom_vline(xintercept = c(2.5, 4.5), linetype=2)+
+  geom_vline(xintercept = c(2.5, 4.5, 6.5), linetype=2)+
    labs(x="",y="Polymorphism in A thalina") +
    theme(axis.text.y=element_text(color="black",hjust=1,size=12)) #Adding stats on tot he plots. requires ggpubr
  
 p + stat_compare_means(label =  "p.signif", label.x = 1.5) 
  
+#### Multivariate regression ####
+setwd("C:/Users/kench/Dropbox/ANALYSIS/MBE_V2/mutationbias")
+
+df1 <- read.csv("../test_met_level_correlation2.csv")
+df1$ABS_CG <- as.numeric(df1$ABS_CG)
+
+df2 <- read.csv("../test_met_level_correlation2_gbm_gbm.csv")
+df2$ABS_CG <- as.numeric(df2$ABS_CG)
+
+df3 <- read.csv("../test_met_level_correlation2_unm_unm.csv")
+df3$ABS_CG <- as.numeric(df3$ABS_CG)
+
+df4 <- read.csv("../test_met_level_correlation2_tem_tem.csv")
+df4$ABS_CG <- as.numeric(df4$ABS_CG)
+
+df5 <- read.csv("../test_met_level_correlation2_diverged.csv")
+df5$ABS_CG <- as.numeric(df5$ABS_CG)
+
+df6 <- read.csv("../test_met_level_correlation2_NOT_diverged.csv")
+df6$ABS_CG <- as.numeric(df6$ABS_CG)
+
+
+
+install.packages("ggpubr")
+
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("kassambara/ggpubr")
+
+library(ggpubr)
+
+cor.test(x = df1$ABS_CG, y = df1$ABS_NSNPs, method= "spearman")
+
+## multiple regression ##
+fit1 <- lm(ABS_NSNPs ~ ABS_CG + ABS_CHG + ABS_CHH + ABS_CG * ABS_CHG + ABS_CG * ABS_CHH + ABS_CHG * ABS_CHH, data = df1)
+fit1a <- lm(ABS_NSNPs ~ ABS_CG + ABS_CH + ABS_CG * ABS_CH, data = df1)
+
+anova(fit1a)
+summary(fit1)
+sqrt(summary(fit1)$r.squared)
+
+fit2 <- lm(ABS_NSNPs ~ ABS_CG + ABS_CHG + ABS_CHH + ABS_CG * ABS_CHG + ABS_CG * ABS_CHH + ABS_CHG * ABS_CHH, data = df2)
+fit2a <- lm(ABS_NSNPs ~ ABS_CG + ABS_CH + ABS_CG * ABS_CH, data = df2)
+
+anova(fit2)
+summary(fit2)
+sqrt(summary(fit2)$r.squared)
+
+fit3 <- lm(ABS_NSNPs ~ ABS_CG + ABS_CHG + ABS_CHH + ABS_CG * ABS_CHG + ABS_CG * ABS_CHH + ABS_CHG * ABS_CHH, data = df3)
+fit3a <- lm(ABS_NSNPs ~ ABS_CG + ABS_CH + ABS_CG * ABS_CH, data = df3)
+
+anova(fit3)
+summary(fit3)
+sqrt(summary(fit3)$r.squared)
+
+fit4 <- lm(ABS_NSNPs ~ ABS_CG + ABS_CHG + ABS_CHH + ABS_CG * ABS_CHG + ABS_CG * ABS_CHH + ABS_CHG * ABS_CHH, data = df4)
+fit4a <- lm(ABS_NSNPs ~ ABS_CG + ABS_CH + ABS_CG * ABS_CH, data = df4)
+
+anova(fit4)
+summary(fit4)
+sqrt(summary(fit4)$r.squared)
+
+fit5 <- lm(ABS_NSNPs ~ ABS_CG + ABS_CHG + ABS_CHH + ABS_CG * ABS_CHG + ABS_CG * ABS_CHH + ABS_CHG * ABS_CHH, data = df5)
+fit5a <- lm(ABS_NSNPs ~ ABS_CG + ABS_CH + ABS_CG * ABS_CH, data = df5)
+
+library(car)
+fit.type3 <-Anova(lm(ABS_NSNPs ~ ABS_CG + ABS_CHG + ABS_CHH + ABS_CG * ABS_CHG + ABS_CG * ABS_CHH + ABS_CHG * ABS_CHH, data = df5), type ='III')
+
+summary(fit.type3)
+pander(fit.type3)
+
+anova(fit5a)
+summary(fit5)
+sqrt(summary(fit5)$r.squared)
+
+fit6 <- lm(ABS_NSNPs ~ ABS_CG + ABS_CHG + ABS_CHH + ABS_CG * ABS_CHG + ABS_CG * ABS_CHH + ABS_CHG * ABS_CHH, data = df6)
+fit6a <- lm(ABS_NSNPs ~ ABS_CG + ABS_CH + ABS_CG * ABS_CH, data = df6)
+
+anova(fit6a)
+summary(fit6)
+sqrt(summary(fit6)$r.squared)
+
+
+
